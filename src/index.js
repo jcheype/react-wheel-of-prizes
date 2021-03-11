@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 const WheelComponent = ({
   segments,
@@ -26,26 +26,27 @@ const WheelComponent = ({
   let frames = 0
   const centerX = 300
   const centerY = 300
+  const canvasRef = useRef(null);
   useEffect(() => {
-    wheelInit()
+    if(!canvasRef.current) return;
+    wheelInit(canvasRef.current)
     setTimeout(() => {
       window.scrollTo(0, 1)
     }, 0)
-  }, [])
-  const wheelInit = () => {
-    initCanvas()
+  }, [canvasRef])
+  const wheelInit = (canvas) => {
+    initCanvas(canvas)
     wheelDraw()
   }
 
-  const initCanvas = () => {
-    let canvas = document.getElementById('canvas')
-    if (navigator.appVersion.indexOf('MSIE') !== -1) {
-      canvas = document.createElement('canvas')
-      canvas.setAttribute('width', 1000)
-      canvas.setAttribute('height', 600)
-      canvas.setAttribute('id', 'canvas')
-      document.getElementById('wheel').appendChild(canvas)
-    }
+  const initCanvas = (canvas) => {
+    // if (navigator.appVersion.indexOf('MSIE') !== -1) {
+    //   canvas = document.createElement('canvas')
+    //   canvas.setAttribute('width', 1000)
+    //   canvas.setAttribute('height', 600)
+    //   canvas.setAttribute('id', 'canvas')
+    //   document.getElementById('wheel').appendChild(canvas)
+    // }
     canvas.addEventListener('click', spin, false)
     canvasContext = canvas.getContext('2d')
   }
@@ -200,9 +201,9 @@ const WheelComponent = ({
     ctx.clearRect(0, 0, 1000, 800)
   }
   return (
-    <div id='wheel'>
+    <div>
       <canvas
-        id='canvas'
+        ref={canvasRef}
         width='1000'
         height='800'
         style={{
